@@ -1,0 +1,66 @@
+*/ 
+Odd and Big
+Write a function that takes three numbers and returns true if and only if all three numbers are odd and greater than 10. Do so by writing a helper function that determines whether a single number is odd and greater than 10. Call this function for every test case from the main function.
+
+Input
+The first line of the input contains T: the number of test cases. T test cases follow.
+
+Each test case is a line containing three numbers: the numbers that should be checked.
+
+Output
+For each test case, output one line containing Case #x: y, where x is the test case number (starting from 1), and y is either Yes or No.
+/*
+
+
+import java.util.Scanner;
+
+class Solution {
+    static class OddAndBig {
+
+        // create helper function
+        private boolean numIsOddAndBig(int num) {
+            if (num > 10 && (num % 2 == 1)) {
+                return true;
+            }
+            return false;
+        }
+    
+        // create function 1
+        public boolean isOddAndBig(int num1, int num2, int num3) {
+            int[] arr = new int[]{num1, num2, num3};
+            int i = 0;
+            int count = 0;
+    
+            while (i < 3) {
+                if (numIsOddAndBig(arr[i])) {
+                    i++;
+                    count++;
+                } else {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
+    public static void main(String[] args) {
+        OddAndBig oddAndBig = new OddAndBig();
+        Scanner scan = new Scanner(System.in);
+        int numOfTests = scan.nextInt();
+
+        int caseNum = 1;
+        int i = 0;
+        while (i < numOfTests) {
+            int num1 = scan.nextInt();
+            int num2 = scan.nextInt();
+            int num3 = scan.nextInt();
+            if (oddAndBig.isOddAndBig(num1, num2, num3)) {
+                System.out.println("Case #" + caseNum+ ": Yes");
+            } else {
+                System.out.println("Case #" + caseNum+ ": No");
+            }
+            caseNum++;
+            i++;
+        }
+    }
+}
