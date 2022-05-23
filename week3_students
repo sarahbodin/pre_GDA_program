@@ -1,0 +1,107 @@
+*/
+Question: Students
+Given some information about the student, print this student's report card.
+
+Define a class containing the following information about a student:
+
+F: First name
+L: Last name
+G1: Grade for the first assignment
+G2: Grade for the second assignment
+G3: Grade for the third assignment
+Define a member function computing the average grade for all assignments. Define a member function returning the full name of the student. Define a member function that outputs the report card in the following format:
+
+L, F: Grades: [G1, G2, G3] (avg: Gavg).
+
+Input
+The first line of the input contains T: the number of test cases. T test cases follow.
+
+Each test case is a line containing two strings and three integer numbers: the F, L, G1, G2, G3.
+
+Output
+For each test case, output one line containing Case #t: L, F: Grades: [G1, G2, G3] (avg: Gavg), where t is the test case number other fields are described in the statement above. The average must be output rounded to one decimal digit after the comma (using "%.1f" format string in System.out.printf).
+/*
+
+
+import java.util.Scanner;
+
+public class Solution {
+    static class Student {
+        // this class holds data for a students information about name and report card
+        String firstName;
+        String lastName;
+        int g1;
+        int g2;
+        int g3;
+    
+        
+        Student(String firstName, String lastName, int g1, int g2, int g3) {
+            // this is the constructor
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.g1 = g1;
+            this.g2 = g2;
+            this.g3 = g3;
+        }
+    
+        public double averageGrade() {
+            // this member function returns the average grade for all assignments
+    
+            this.g1 = g1;
+            this.g2 = g2;
+            this.g3 = g3;
+    
+            double avg = ((g1 + g2 + g3) / 3.0);
+    
+            return avg;
+        }
+    
+        public String fullName() {
+            // this member function returns the student's full name
+    
+            this.firstName = firstName;
+            this.lastName = lastName;
+    
+            return firstName + lastName;
+        }
+    
+        public String reportCard() {
+            // this member function returns a students report card
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.g1 = g1;
+            this.g2 = g2;
+            this.g3 = g3;
+    
+            // convert formatting to string and float then return 
+            return String.format("%s, %s: Grades: [%d, %d, %d] (avg: %.1f)", lastName, firstName, g1, g2, g3, averageGrade());
+        }
+    }
+    public static void main(String[] args) {
+
+        // initialize variables to track
+        int i = 0;
+        int caseNum = 1;
+
+        // scan first input num
+        Scanner scan = new Scanner(System.in);
+        int numOfCases = scan.nextInt();
+
+        while (i < numOfCases) {
+            String firstname = scan.next();
+            String lastname = scan.next();
+            int g1 = scan.nextInt();
+            int g2 = scan.nextInt();
+            int g3 = scan.nextInt();
+
+            // create new instance of Student
+            Student student = new Student(firstname, lastname, g1, g2, g3);
+
+            // Print out Report Card + Avg grade
+            System.out.println("Case #" + caseNum + ": " + student.reportCard());
+            i++;
+            caseNum++;
+        }
+    }
+}
+   
