@@ -1,0 +1,80 @@
+*/
+Define class Point, representing a point on the 2-dimensional plane. The class should contain two fields, representing the coordinates of these points: x and y.
+
+Define a function that takes two Point objects (with x, y coordinates) and returns whichever one is closest to the origin. Do so by defining a method in the Point class that computes the distance to the origin.
+
+Input
+The first line of the input contains T: the number of test cases. T test cases follow.
+
+Each test case is a line containing four integer numbers: the x coorinate of the first point, followed by the y coordinate of the first point, followed by the x coorinate of the second point, followed by the y coordinate of the second point.
+
+Output
+For each test case, output one line containing Case #t: x y, where t is the test case number (starting from 1), and x and y are the coordinates of the point closes to the origin.
+/*
+
+import java.util.Scanner;
+
+public class Solution {
+    static class Point {
+
+        // constructor
+        Point(double x, double y) {
+            this.x = x;
+            this.y = y;
+        }
+        double x;
+        double y;
+    
+        // define a method in the Point class that computes distance to the origin
+    
+    
+        // Do so by defining a method in the Point class that computes the distance to the origin
+        public static Point closestPointToOrigin(Point one, Point two) {
+            double oneDistance = one.distanceToOrigin();
+            double twoDistance = two.distanceToOrigin();
+            if (oneDistance > twoDistance) {
+                return two;
+            }
+            return one;
+        }
+    
+        public double distanceToOrigin() {
+            double x2 = 0;
+            double y2 = 0;
+    
+            double ac = Math.abs(y2 - y);
+            double cb = Math.abs(x2 - x);
+    
+            return Math.hypot(ac, cb);
+        }
+    
+    }
+    public static void main(String[] args) {
+
+        // Scan input
+        Scanner scan = new Scanner(System.in);
+        int numOfTests = scan.nextInt();
+
+
+        int caseNum = 1;
+        int i = 0;
+        while (i < numOfTests) {
+            // scan in tests 
+            double x1 = scan.nextInt();
+            double y1 = scan.nextInt();
+            double x2 = scan.nextInt();
+            double y2 = scan.nextInt();
+
+            // construct two Points
+            Point pointOne = new Point(x1, y1);
+            Point pointTwo = new Point(x2, y2);
+
+            Point closestPoint = Point.closestPointToOrigin(pointOne, pointTwo);
+            int valueX = (int)Math.round(closestPoint.x);
+            int valueY = (int)Math.round(closestPoint.y);
+            System.out.println("Case #" + caseNum + ": " + valueX + " " + valueY);
+            i++;
+            caseNum++;
+        }
+    }
+}
