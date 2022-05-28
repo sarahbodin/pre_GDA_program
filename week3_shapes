@@ -1,0 +1,231 @@
+*/Problem: Shapes
+Define a class for a 2D point (as x and y coordinates), a segment (as two points), a triangle (as three points), a rectangle with sides parallel to the coordinate axes (as its diagonal segment: the segment going from the bottom left corner to the top right corner).
+
+For the segment: implement a constructor from two points and a member function computing the length of the segment.
+
+For the rectangle: implement member functions computing corner points of the rectangle (the bottom right and the top left, in addition to the ones contained in the segment).
+
+For the triangle and the rectangle: implement member functions computing their area (Tip: use this formula for the triangle area) and their perimeters.
+
+For the triangle: implement a member function to create a containing rectangle from a triangle (where containing rectangle is the minimal rectangle that fully contains the given triangle inside; its bottom left corner coordinates are the minimal coordinates of all triangle points coordinates, and its top right corner coordinates are the maximal coordinates of all triangle points coordinates).
+
+Given coordinates of triangle points, output:
+
+The triangle area
+The triangle perimeter
+The containing rectangle area
+The containing rectangle perimeter
+Input
+The first line of the input contains T: the number of test cases. T test cases follow.
+
+Each test case is a line containing six integer numbers: x1, y1, x2, y2, x3, and y3, where (xi,yi) are the coordinates of the i-th point of the triangle.
+
+Output
+For each test case, output one line containing Case #t: Ta Tp Ra Rp, where t is the test case number (starting from 1), Ta is the triangle area, Tp is the triangle perimeter, Ra is the containing rectangle area, Ra is the containing rectangle perimeter. All numbers must be output rounded to 2 decimal digits after the comma (using "%.2f" format string in System.out.printf.)
+/*
+
+import java.util.Arrays;
+import java.util.Scanner;
+import java.lang.*;
+
+public class Solution {
+    static public class RectangleWk3Shapes {
+
+        SegmentWk3Shapes segmentOne;
+    
+        // create constructor
+        RectangleWk3Shapes(SegmentWk3Shapes segmentOne) {
+            this.segmentOne = segmentOne;
+        }
+    
+        // member function computing bottom right coordinate of rectangle (Point)
+        public PointWk3 bottomRightPoint() {
+    
+            PointWk3 bottomLeft = segmentOne.pointOne;
+            PointWk3 topRight = segmentOne.pointTwo;
+    
+            PointWk3 bottomRight = new PointWk3(topRight.x, bottomLeft.y);
+    
+            return bottomRight;
+        }
+    
+        public PointWk3 topLeft(SegmentWk3Shapes segmentOne) {
+            // member function computing top left coordinate (Point)
+    
+            PointWk3 bottomLeft = segmentOne.pointOne;
+            PointWk3 topRight = segmentOne.pointTwo;
+    
+            PointWk3 topLeft = new PointWk3(bottomLeft.x, topRight.y);
+    
+            return topLeft;
+        }
+    
+        public double areaOfRectangle() {
+            // this member function computes the area of a rectangle
+    
+            // get bottom right point
+            PointWk3 bottomRight = bottomRightPoint();
+    
+            // get bottom left point
+            PointWk3 bottomLeft = segmentOne.pointOne;
+    
+            // compute width
+            double width = bottomRight.x - bottomLeft.x;
+    
+            // get top right point
+            PointWk3 topRight = segmentOne.pointTwo;
+    
+            // compute height
+            double height = topRight.y - bottomRight.y;
+    
+            return width * height;
+        }
+    
+        public double perimeter() {
+            // get bottom right point
+            PointWk3 bottomRight = bottomRightPoint();
+    
+            // get bottom left point
+            PointWk3 bottomLeft = segmentOne.pointOne;
+    
+            // compute width
+            double width = bottomRight.x - bottomLeft.x;
+    
+            // get top right point
+            PointWk3 topRight = segmentOne.pointTwo;
+    
+            // compute height
+            double height = topRight.y - bottomRight.y;
+    
+            return 2 * (height + width);
+        }
+    }
+    static public class Triangle {
+
+        // instance variables
+        PointWk3 pointOne;
+        PointWk3 pointTwo;
+        PointWk3 pointThree;
+    
+        public Triangle(PointWk3 pointOne, PointWk3 pointTwo, PointWk3 pointThree) {
+            // constructor
+    
+            this.pointOne = pointOne;
+            this.pointTwo = pointTwo;
+            this.pointThree = pointThree;
+        }
+    
+        public double findArea() {
+            // this member function computes area of triangle
+    
+            // compute area using points
+            double area = (((pointOne.x * (pointTwo.y - pointThree.y)) + (pointTwo.x *
+                    (pointThree.y - pointOne.y)) + (pointThree.x * ((pointOne.y) - pointTwo.y))) / 2);
+    
+            return Math.abs(area);
+        }
+    
+        public double perimeter() {
+            // this member function computes perimeter of triangle
+    
+            // compute side A
+            double sideA = Math.sqrt((pointTwo.y - pointOne.y) * (pointTwo.y - pointOne.y) + (pointTwo.x - pointOne.x) * (pointTwo.x - pointOne.x));
+            double sideB = Math.sqrt((pointThree.y - pointTwo.y) * (pointThree.y - pointTwo.y) + (pointThree.x - pointTwo.x) * (pointThree.x - pointTwo.x));
+            double sideC = Math.sqrt((pointThree.y - pointOne.y) * (pointThree.y - pointOne.y) + (pointThree.x - pointOne.x) * (pointThree.x - pointOne.x));
+    
+            return sideA + sideB + sideC;
+        }
+    
+        public SegmentWk3Shapes containingRectangle() {
+            // creates containing rectangle
+    
+            // compute lowest x & y coordinate from the points
+            double[] arrX = new double[] {pointOne.x, pointTwo.x, pointThree.x};
+            Arrays.sort(arrX);
+            double lowestX = arrX[0];
+    
+            double[] arrY = new double[] {pointOne.y, pointTwo.y, pointThree.y};
+            Arrays.sort(arrY);
+            double lowestY = arrY[0];
+    
+            PointWk3 bottomLeft = new PointWk3(lowestX, lowestY);
+    
+    
+            PointWk3 topRight = new PointWk3(arrX[2], arrY[2]);
+    
+            SegmentWk3Shapes segment = new SegmentWk3Shapes(bottomLeft, topRight);
+            return segment;
+        }
+    }
+    
+    static public class PointWk3 {
+        // this class belongs to the Shapes question in week 3 lab
+    
+        double x;
+        double y;
+    
+        // constructor
+        PointWk3(double x, double y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+    static public class SegmentWk3Shapes {
+        // this class belongs to the shapes problem week 3 lab
+    
+        PointWk3 pointOne;
+        PointWk3 pointTwo;
+    
+        // create constructor
+        SegmentWk3Shapes(PointWk3 pointOne, PointWk3 pointTwo) {
+            this.pointOne = pointOne;
+            this.pointTwo = pointTwo;
+        }
+    
+        // member function computing the length of the segment
+        public double lengthOfSegment(PointWk3 pointOne, PointWk3 pointTwo) {
+    
+            double ac = Math.abs(pointTwo.y - pointOne.y);
+            double cb = Math.abs(pointTwo.x - pointOne.x);
+    
+            return Math.hypot(ac, cb);
+        }
+    }   
+    public static void main(String[] args) {
+
+        Scanner scan = new Scanner(System.in);
+        int numOfCases = scan.nextInt();
+
+        int i = 0;
+        int caseNum = 1;
+
+        while (i < numOfCases) {
+            double x1 = scan.nextInt();
+            double y1 = scan.nextInt();
+            double x2 = scan.nextInt();
+            double y2 = scan.nextInt();
+            double x3 = scan.nextInt();
+            double y3 = scan.nextInt();
+
+            // create three points
+            PointWk3 pointOne = new PointWk3(x1, y1);
+            PointWk3 pointTwo = new PointWk3(x2, y2);
+            PointWk3 pointThree = new PointWk3(x3, y3);
+
+            Triangle triangle = new Triangle(pointOne, pointTwo, pointThree);
+
+            double area = triangle.findArea();
+            double perimeter = triangle.perimeter();
+            SegmentWk3Shapes containingRectangle = triangle.containingRectangle();
+            RectangleWk3Shapes rectangle = new RectangleWk3Shapes(containingRectangle);
+            double areaRect = rectangle.areaOfRectangle();
+            double perimeterRect = rectangle.perimeter();
+
+            System.out.printf("%s%d%s%.2f %.2f %.2f %.2f%n", "Case #", caseNum, ": ", area, perimeter, areaRect, perimeterRect);
+            caseNum++;
+            i++;
+        }
+
+    }
+
+}
