@@ -1,0 +1,53 @@
+*/ Problem: Reverse
+Write a function that takes a string and reverses every word in it. Reversed word is a word which is written from back to front.
+
+Input
+The first line of the input contains T: the number of test cases. T test cases follow.
+
+Each test case is a line containing one or more words. Every word is a sequence of small latin characters. The words are separated by a single space character.
+
+Output
+For each test case, output one line containing Case #x: S, where x is the test case number (starting from 1), and S is the corresponding string with all words reversed.
+/*
+
+import java.util.Scanner;
+
+public class Solution {
+    public static void main(String[] args) {
+
+        // scan in input
+        Scanner scan = new Scanner(System.in);
+        int numOfCases = scan.nextInt();
+
+        // initialize variables
+        int i = 0;
+        int caseNum = 1;
+
+        // loop over test cases and split string into array
+        while (i < numOfCases) {
+
+            // scan next token to get to next line containing string
+            String s = scan.next();
+            s += scan.nextLine();
+
+            // split string into array by words
+            String[] words = s.split(" ");
+
+            // create empty string
+            String result = "";
+
+            // loop over array and reverse each word
+            for (String word : words) {
+                char[] try1 = word.toCharArray();
+                for (int j = try1.length - 1; j >= 0; j--) {
+                    // traverse word in reverse, adding char to string
+                    result += try1[j];
+                }
+                result += " ";
+            }
+            System.out.println("Case #" + caseNum + ": " + result);
+            caseNum++;
+            i++;
+        }
+    }
+}
