@@ -1,0 +1,56 @@
+*/ problem: Extremes
+Given an array, count how many elements in the array are equal to the maximal or to the minimal value of the array.
+
+Input
+The first line of the input contains T: the number of test cases. T test cases follow.
+
+Each test case is a line containing N: the number of elements in the array, followed by N integers: the elements of the array.
+
+Output
+For each test case, output one line containing Case #x: y, where x is the test case number (starting from 1), and y is the number of elements in the array which are equal to the maximal or to the minimal value of the array.
+/*
+
+import java.util.Scanner;
+import java.util.Arrays;
+
+public class Solution {
+    public static void main(String[] args) {
+
+        // scan in input
+        Scanner scan = new Scanner(System.in);
+        int numOfCases = scan.nextInt();
+
+        // initialize variables
+        int i = 0;
+        int caseNum = 1;
+
+        // loop over test cases 
+        while (i < numOfCases) {
+            int numOfIntegers = scan.nextInt();
+
+            // add elems to array
+            int[] arr = new int[numOfIntegers];
+            for (int j = 0; j < numOfIntegers; j++) {
+                arr[j] = scan.nextInt();
+            }
+
+            // sort array
+            Arrays.sort(arr);
+
+            // get min & max
+            int minElem = arr[0];
+            int maxElem = arr[numOfIntegers - 1];
+
+            // track count of min or max elems
+            int count = 0;
+            for (int elem: arr) {
+                if (elem == minElem || elem == maxElem) {
+                    count++;
+                }
+            }
+            System.out.println("Case #" + caseNum + ": " + count);
+            caseNum++;
+            i++;
+        }
+    }
+}
