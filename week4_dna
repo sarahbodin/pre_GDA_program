@@ -1,0 +1,171 @@
+*/ Problem: DNA
+DNA, the carrier of genetic information in living things, has been used in criminal justice for decades. But how, exactly, does DNA profiling work? Given a sequence of DNA, how can forensic investigators identify to whom it belongs?
+
+Well, DNA is really just a sequence of molecules called nucleotides, arranged into a particular shape (a double helix). Each nucleotide of DNA contains one of four different bases: adenine (A), cytosine (C), guanine (G), or thymine (T). Every human cell has billions of these nucleotides arranged in sequence. Some portions of this sequence (i.e. genome) are the same, or at least very similar, across almost all humans, but other portions of the sequence have a higher genetic diversity and thus vary more across the population.
+
+One place where DNA tends to have high genetic diversity is in Short Tandem Repeats (STRs). An STR is a short sequence of DNA bases that tends to be repeated back-to-back numerous times at specific locations in DNA. The number of times any particular STR repeats varies a lot among different people. In the DNA samples below, for example, Alice has the STR AGAT repeated four times in her DNA, while Bob has the same STR repeated five times.
+
+Alice: CTAGATAGATAGATAGATGACTA.
+
+Bob: CTAGATAGATAGATAGATAGATT.
+
+Using multiple STRs, rather than just one, can improve the accuracy of DNA profiling. If the probability that two people have the same number of repeats for a single STR is 5%, and the analyst looks at 10 different STRs, then the probability that two DNA samples match purely by chance is about 1 in 1 quadrillion (assuming all STRs are independent of each other). So if two DNA samples match in the number of repeats for each of the STRs, the analyst can be pretty confident they came from the same person. CODIS, The FBI's DNA database, uses 20 different STRs as part of its DNA profiling process.
+
+Consider the following database, containing the information about 3 STRs for two people:
+3 AGAT AATG TATC
+2
+Alice 28 42 14
+Bob 17 22 19
+This database encodes that supported STRs are AGAT, AATG and TATC; and that Alice has the sequence AGAT repeated 28 times consecutively somewhere in her DNA, the sequence AATG repeated 42 times, and TATC repeated 14 times. Bob, meanwhile, has those same three STRs repeated 17 times, 22 times, and 19 times, respectively.
+So given a sequence of DNA, how might you identify to whom it belongs? Well, imagine that you looked through the DNA sequence for the longest consecutive sequence of repeated AGATs and found that the longest sequence was 17 repeats long. If you then found that the longest sequence of AATGs is 22 repeats long, and the longest sequence of TATC is 19 repeats long, that would provide pretty good evidence that the DNA was Bob's. Of course, it's also possible that once you take the counts for each of the STRs, it doesn't match anyone in your DNA database, in which case you have no match.
+
+Your task is to write a program that will take a DNA database with STR counts for a list of individuals, a list of DNAs, and then output to whom the DNAs (most likely) belong.
+
+Source: http://nifty.stanford.edu/2020/dna/.
+
+Input
+The first line of the input contains S: the number of STRs, followed by the STRs themselves. Each STR is a string containing capital latin letters A, C, G, or T.
+
+The next line contains N: the number of people in the database.
+
+The next N lines contain the information about every person: their name, and the number of times the corresponding STR is replicated in their DNA.
+
+The next line contains M: the number of samples to identify.
+
+The following M lines are test cases: strings containing capital latin letters A, C, G, or T.
+
+Output
+For each sample, output one line containing Case #x: y, where x is the sample number (starting from 1), and y is either the name of the person, to whom the sample belongs, or string No match if such person does not exist in the database.
+/*
+
+import java.util.HashMap;
+import java.util.Scanner;
+import java.lang.String;
+
+public class Solution {
+
+    static class Profile {
+        String name;
+        int[] arr;
+    
+        public Profile(String name, int[] arr) {
+            this.name = name;
+            this.arr = arr;
+        }
+    }
+
+    static class dnaSample {
+        String sample;
+    
+        //constructor
+        public dnaSample(String sample) {
+            this.sample = sample;
+        }
+    
+        public int countSTR(String STR) {
+            String sampleCopy = sample;
+            int index = sampleCopy.indexOf(STR);
+            int currentCount = 0;
+            int highestCountSoFar = 0;
+            while (index != -1) {
+                currentCount++;
+                sampleCopy = sampleCopy.substring(index + STR.length());
+                index = sampleCopy.indexOf(STR);
+                if (index != 0) {
+                    if (currentCount > highestCountSoFar) {
+                        highestCountSoFar = currentCount;
+                    }
+                    currentCount = 0;
+                }
+    
+            }
+            return highestCountSoFar;
+        }
+    }
+
+    public static void main(String[] args) {
+
+        // scan in input
+        Scanner scan = new Scanner(System.in);
+        int numOfSTRS = scan.nextInt();
+
+        // create array & append STRS's
+        String[] arr = new String[numOfSTRS];
+        for (int a = 0; a < numOfSTRS; a++) {
+            arr[a] = scan.next();
+        }
+
+        // identify profiles in db
+        int numOfProfiles = scan.nextInt();
+
+        // store profiles in arrays
+
+        // create array
+
+        Profile[] arrOfProfiles = new Profile[numOfProfiles];
+
+        for (int i = 0; i < numOfProfiles; i++) {
+            String name = scan.next();
+            int[] profileInts = new int[numOfSTRS];
+            for (int j = 0; j < numOfSTRS; j++) {
+                profileInts[j] = scan.nextInt();
+            }
+            Profile profile = new Profile(name, profileInts);
+            arrOfProfiles[i] = profile;
+        }
+
+        // count num of times STR's appear in each case
+
+        int numOfSequences = scan.nextInt();
+        int b = 0;
+        int[] arrOfRepeats = new int[numOfSTRS];
+
+        // store all DNA sequences s in array
+        String[] sequencesArr = new String[numOfSequences];
+        for (int i = 0; i < numOfSequences; i++) {
+            sequencesArr[i] = scan.next();
+        }
+
+        HashMap<String, HashMap<String, Integer>> outerMap = new HashMap<String, HashMap<String, Integer>>();
+        for (int i = 0; i < sequencesArr.length; i++) {
+            HashMap<String, Integer> innerMap = new HashMap<>();
+            String sequence = sequencesArr[i];
+            for (int j = 0; j < arr.length; j++) {
+                dnaSample sample = new dnaSample(sequence);
+                String str = arr[j];
+                int count = sample.countSTR(str);
+                innerMap.put(str, count);
+            }
+            outerMap.put(sequence, innerMap);
+
+        }
+
+        // compare data
+
+        for (int i = 0; i < sequencesArr.length; i++) {
+            String sequence = sequencesArr[i];
+            boolean isMatch = false;
+            HashMap<String, Integer> innerMap = outerMap.get(sequence);
+            for (int k = 0; k < arrOfProfiles.length; k++) {
+                Profile profile = arrOfProfiles[k];
+                int[] profileCounts = profile.arr;
+                int countSoFar = 0;
+                for (int j = 0; j < profileCounts.length; j++) {
+                    String STR = arr[j];
+                    int innerMapCount = innerMap.get(STR);
+                    if (profileCounts[j] == innerMapCount) {
+                        countSoFar++;
+                    }
+                }
+                if (countSoFar == numOfSTRS) {
+                    System.out.println("Case #" + (i + 1) + ": " + profile.name);
+                    isMatch = true;
+                }
+            }
+            if (isMatch == false) {
+                System.out.println("Case #" + (i + 1) + ": No match");
+
+            }
+        }
+    }
+}
