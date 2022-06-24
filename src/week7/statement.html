@@ -1,0 +1,45 @@
+<h3>Stack (week 7, assignment 1)</h3>
+<p></p>
+
+<p> Instructions:</p>
+    
+<p> A Stack is a last-in, first-out ("LIFO") collection. This means that the element that we
+    "pop" off the Stack is always the last element we "push"ed into the Stack. As we add
+    more elements, existing elements are "psuhed down" the Stack.</p>
+
+<p>Example</p>
+<pre>
+    StringStack s = new StringStack();  // internally, the stack looks like this, with the "top" of the stack to the left: []
+    s.push("a")                         // stack: ["a"]             "a" is the top and only stack eleemnt
+    s.push("b")                         // stack: ["b", "a"]        "b" is now the top element
+    s.push("a")                         // stack: ["c", "b", "a"]   "c" is now the top element
+    String popped = s.pop()             // stack: ["b", "a"], popped = "c"
+    String peeked = s.peek()            // stack: ["b", "a"], peeked = "b"
+</pre>
+
+<p>Implement the class StringStack class (using one of the two options explained below).</p>
+
+<p>YOU HAVE TWO OPTIONS for implementing StringStack:</p>
+<p>Option 1 (easier): Just implement the StringStackImpl Class, by writing the four methods it implements.
+These four methods are listed in the interface: push, peek, pop, size.</p>
+
+<p>Option 2 (slightly more difficult, requires some knowledge of Java Generics):
+If you're comfortable with Java Generics, implement the StackImpl class,
+then (trivially) implement StringStackImpl as a subclass of StackImpl.</p>
+
+
+<p>Now, implement the static main method, and exercise your Stack:</p>
+
+<p>Create a StringStackImpl object, which we'll refer to below as "the stack".
+Then read strings from System.in, as long as System.in has Strings to read.</p>
+
+<h3>Input and Output</h3>
+<p>For each string read,<p></p>
+<p>if the string read is "peek" (case insensitive), so "Peek", "pEEk", etc. also qualify,</p>
+print out the top element of the stack followed by a newline.</p>
+<p>Or, if it's "pop" (case insensitive), pop the stack and print the popped element.</p>
+<p>Or, if it's "size", print out the Stack's size, followed by a newline.</p>
+<p>Or, if a Stack Underflow occurs -- or would occur --, print "SU", followed by a newline.</p>
+<p>Or, if it's anything else, push the string read onto the stack, and print out the stack size, followed by a newline.</p>
+    
+<sampleio test_set=1>
