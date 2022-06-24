@@ -1,0 +1,162 @@
+#!/bin/bash
+
+# This script compiles the check binary locally on the machine because
+# CloudShell does not like uploaded binaries...
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
+CHECK_BIN="${SCRIPT_DIR}/check_bin"
+
+if [ -e "$CHECK_BIN" ]; then
+  exec "$CHECK_BIN"
+fi;
+
+pushd "$SCRIPT_DIR" &> /dev/null
+cat > check_bin.go <<EOF
+// Package main is the check binary.
+package main
+
+import (
+	"fmt"
+	"io/ioutil"
+	"log"
+	"os/exec"
+	"path"
+	"strings"
+)
+
+const (
+	testDirName = "tests/"
+	inSuffix    = ".in"
+	outSuffix   = ".out"
+	className   = "Solution"
+)
+
+func isNewline(r rune) bool {
+	return r == '\n' || r == '\r'
+}
+
+// splitLines splits the input on newline, skipping empty and space-only lines. Trims the lines.
+func splitLines(s string) []string {
+	ls := strings.FieldsFunc(s, isNewline)
+	var r []string
+	for _, l := range ls {
+		if tl := strings.TrimSpace(l); tl != "" {
+			r = append(r, tl)
+		}
+	}
+	return r
+}
+
+// diffLine returns true if the lines are different (ignoring potential whitespace differences).
+func diffLine(got, want string) bool {
+	gotFields := strings.Fields(got)
+	wantFields := strings.Fields(want)
+	if len(gotFields) != len(wantFields) {
+		return true
+	}
+	for i := 0; i < len(gotFields); i++ {
+		if gotFields[i] != wantFields[i] {
+			return true
+		}
+	}
+	return false
+}
+
+// diff returns a non-empty diff description if two multi-line strings differ.
+func diff(got, want string) string {
+	var diffs []string
+	gotLines := splitLines(got)
+	wantLines := splitLines(want)
+	// Append empty lines to make the sizes match.
+	for len(wantLines) < len(gotLines) {
+		wantLines = append(wantLines, "")
+	}
+	for len(gotLines) < len(wantLines) {
+		gotLines = append(gotLines, "")
+	}
+	for i := 0; i < len(gotLines); i++ {
+		if dl := diffLine(gotLines[i], wantLines[i]); dl {
+			diffs = append(diffs,
+				fmt.Sprintf("  Line %d:\n    Got:  %s\n    Want: %s", i+1, gotLines[i], wantLines[i]))
+		}
+	}
+	return strings.Join(diffs, "\n")
+}
+
+func main() {
+	testsDir, err := ioutil.ReadDir(testDirName)
+	if err != nil {
+		log.Fatalf(
+			"Cannot read the tests directory: are you running the tool in the correct directory? "+
+				"Try to `cd` to the directory containing the %q subdirectory. Error: %v.", testDirName, err)
+	}
+	if len(testsDir) == 0 {
+		log.Fatalf(
+			"The tests directory is empty: are you running the tool in the correct directory? "+
+				"Try to `cd` to the directory containing the %q subdirectory.", testDirName)
+	}
+
+	compileOut, err := exec.Command("javac", fmt.Sprintf("%s.java", className)).CombinedOutput()
+	if err != nil {
+		log.Fatalf("Cannot compile Solution.java: %v\n%s", err, string(compileOut))
+	}
+
+	var testNames []string
+	for _, f := range testsDir {
+		if strings.HasSuffix(f.Name(), inSuffix) {
+			testNames = append(testNames, strings.TrimSuffix(f.Name(), inSuffix))
+		} else if !strings.HasSuffix(f.Name(), outSuffix) {
+			log.Fatalf(
+				"Unexpected file in the %q directory: %q (expecting only files ending with %q or %q).",
+				testDirName, f.Name(), inSuffix, outSuffix)
+		}
+	}
+
+	for _, t := range testNames {
+		in, err := ioutil.ReadFile(path.Join(testDirName, t+inSuffix))
+		if err != nil {
+			log.Fatalf("Cannot read input for %q: %v", t, err)
+		}
+		want, err := ioutil.ReadFile(path.Join(testDirName, t+outSuffix))
+		if err != nil {
+			log.Fatalf("Cannot read output for %q: %v", t, err)
+		}
+
+		cmd := exec.Command("java", className)
+
+		inPipe, err := cmd.StdinPipe()
+		if err != nil {
+			log.Fatalf("Cannot create input pipe for %q: %v", t, err)
+		}
+		go func() {
+			if _, err := inPipe.Write(in); err != nil {
+				log.Fatalf("Cannot write to the input pipe for %q: %v", t, err)
+			}
+			if err := inPipe.Close(); err != nil {
+				log.Fatalf("Cannot close the input pipe for %q: %v", t, err)
+			}
+		}()
+
+		got, err := cmd.CombinedOutput()
+		if err != nil {
+			log.Fatalf("Cannot run the solution for %q: %v; output:\n%s", t, err, got)
+		}
+
+		if d := diff(string(got), string(want)); d != "" {
+			log.Fatalf(
+				"Wrong answer for test %q.\nInput:\n%s\nGot output:\n%s\n"+
+					"Expected output:\n%s\nDifference:\n%s",
+				t, string(in), string(got), string(want), d)
+		}
+	}
+
+	fmt.Printf("All good! Executed %d tests.\n", len(testNames))
+}
+
+EOF
+
+go build check_bin.go
+rm -f check_bin.go
+
+popd &> /dev/null
+exec "$CHECK_BIN"
