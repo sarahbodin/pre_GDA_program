@@ -28,6 +28,6 @@ public static boolean isValid(String line, String opens, String closes) which ta
 
 Note that this method also takes two additional Strings, a list of open braces and a list of closed braces.
 
-It's helpful to be able to turn a String variable "line" into an array of char, which you can do with:
+It's helpful to be able to turn a String variable "line" into an array of char, which you can do with
 
 > line.toCharArray()
