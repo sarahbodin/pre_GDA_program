@@ -1,0 +1,53 @@
+<h3>Balanced Braces (week 7, assignment 2)</h3>
+<p></p>
+
+<p> Instructions:</p>
+    
+
+ <p>Read lines from System.in until there are no more lines.</p>
+
+ <p>For each line read, output "valid" or "invalid"</p>
+
+ <p>Each line consists of arbitrary characters. You can ignore all characters that are not braces.</p>
+
+  <p>Braces include:</p>
+  <pre>
+  "(", which is closed by ")"
+  "[", which is closed by "]"
+  "{", which is closed by "}"
+  "&lt;", which is closed by "&gt;"</pre>
+
+ <p>Output "valid" if the braces on that line are correctly nested,
+ so that each open brace is closed by its corresponding closing brace,
+ and braces are nested "( ( () ) )", not interleaved: "( [ ) ]"</p>
+
+ <p>For each line, output "valid" if every open symbol in the set "( [ { &lt;"
+ it has a matching corresponding closing symbol ") ] } &gt;", and they are not interleaved;
+ else output "invalid".</p>
+
+ <p>i.e,</p>
+ <p><pre>"()[]"</pre> is valid,</p>
+ <p><pre>"([])"</pre> is valid,</p>
+ <p><pre>"(cite[24])"</pre> is valid,</p>
+<p></p>
+ <p>but <pre>"([)]"</pre> and</p>
+ <p><pre>"("</pre> are invalid.</p>
+
+ <p>You can implement this using a stack.
+ One possible implementation uses a StringStack; another uses a Stack&lt;Integer&gt;.</p>
+
+ <p>Copy your Stack implementation (or StringStack implementation)
+ from assignment 1 or assignment 2 to here, and use it.</p>
+
+ <p>One way to solve this is to write a function:</p>
+ <pre> public static boolean isValid(String line, String opens, String closes)</pre>
+ <p>which takes a line of the input, and returns whether that line is balanced.</p>
+
+ <p>Note that this method also takes two additional Strings, a list of open braces and a list of closed braces.</p>
+
+ <p>It's helpful to be able to turn a String variable "line" into an array of char, which you can do with</p>
+
+<pre>      line.toCharArray()</pre>
+
+
+<sampleio test_set=1>
