@@ -54,3 +54,6 @@ public static double rpn(String line) {
 // make a Stack here
 try (Scanner lin = new Scanner(line)) { ....
 Sample
+
+![Screen Shot 2022-06-28 at 3 08 37 PM](https://user-images.githubusercontent.com/105678095/176264059-5d3d5ec9-dd24-4845-8e55-c01b5d5447f4.png)
+
